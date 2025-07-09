@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres ser mi novia?</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #ffccd5, #ffe6f0);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+        img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid #e91e63;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #e91e63;
+            font-size: 2.5em;
+        }
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            background-color: #e91e63;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #ad1457;
+            transform: scale(1.1);
+        }
+        #noButton {
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <img src="foto_marco_redondo.png" alt="Tu foto">
+    <h1>💖 ¿Quieres ser mi novia? 💖</h1>
+    <button onclick="respuesta('Sí')">Sí 🥰</button>
+    <button id="noButton" onmouseover="moverNo()" onclick="respuesta('No')">No 😢</button>
+
+    <audio autoplay loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+        Tu navegador no soporta audio.
+    </audio>
+
+    <script>
+        function respuesta(opcion) {
+            if (opcion === "Sí") {
+                alert("🥳 muy bien bb ❤️ Te amo mucho 💖");
+            } else {
+                alert("Bueno... ");
+            }
+        }
+
+        function moverNo() {
+            const noBtn = document.getElementById('noButton');
+            noBtn.style.top = Math.random() * window.innerHeight + 'px';
+            noBtn.style.left = Math.random() * window.innerWidth + 'px';
+        }
+    </script>
+</body>
+</html>
