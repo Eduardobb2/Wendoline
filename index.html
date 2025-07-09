@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¿Quieres ser mi novia?</title>
-    <!-- Google Fonts: Montserrat y alternativas -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
     <style>
         html, body {
@@ -90,12 +89,13 @@
             background-color: #ad1457;
             transform: scale(1.08);
         }
-        #noButton {
+        /* Elimina el absolute del botón no */
+        /* #noButton {
             position: absolute !important;
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-        }
+        } */
         #confetti-canvas {
             pointer-events: none;
             position: fixed;
@@ -191,28 +191,20 @@
 
     <div class="botones" id="botones">
         <button id="siButton" onclick="respuesta('Sí')">Sí 🥰</button>
-        <button id="noButton" onmouseover="moverNo()" onclick="respuesta('No')">No 😢</button>
+        <button id="noButton" onmousedown="moverNo(event)" onclick="respuesta('No')">No 😢</button>
     </div>
 
-    <!-- Música siempre sonando, sin requerir interacción (algunos navegadores móviles pueden requerir interacción) -->
     <audio id="love-audio" src="https://cdn.pixabay.com/audio/2023/03/23/audio_12c4e3e8b1.mp3" autoplay loop></audio>
-
-    <!-- Canvas para confeti -->
     <canvas id="confetti-canvas"></canvas>
-
-    <!-- SVG para anillo -->
     <div id="ring">
         <svg viewBox="0 0 120 120">
-            <!-- Aro -->
             <ellipse cx="60" cy="80" rx="40" ry="35" fill="gold" stroke="#bfa700" stroke-width="8"/>
-            <!-- Diamante -->
             <polygon points="60,35 85,60 60,20 35,60" fill="#b7f9ff" stroke="#5ed4f6" stroke-width="3"/>
             <ellipse cx="60" cy="45" rx="12" ry="7" fill="#d8faff" stroke="#a4e7f6" stroke-width="2"/>
         </svg>
     </div>
-
     <div class="dedicatoria" id="dedicatoria">
-        Ya estamos en una nueva etapa, espero y la siguiente sea poder ser marido y mujer, o papas de un perrito, o ya si nos sobra amor, tener unos chamaquitos, lo que sea que pase que siempre estemos juntos.
+        Ya estamos en una nueva etapa, espero y la siguiente sea poder ser marido y mujer, o papas de un perrito, o ya si nos sobra amor, tener unos chamaquitos, lo que sea pero siempre juntos💖
     </div>
 
     <script>
@@ -225,7 +217,6 @@
                 hasPlayed = true;
             }
         }
-        // Iniciar audio al primer toque/click si es necesario
         window.addEventListener('touchstart', playAudio, { once: true });
         window.addEventListener('click', playAudio, { once: true });
 
@@ -272,7 +263,6 @@
                     );
                     ctx.fillStyle = c.color;
                     ctx.fill();
-                    // reinicia si sale de pantalla
                     if (c.y > canvas.height + 20) {
                         c.x = Math.random() * canvas.width;
                         c.y = -20;
@@ -281,12 +271,11 @@
                 animationFrame = requestAnimationFrame(draw);
             }
             draw();
-            // Detener confeti después de 5 segundos
             setTimeout(() => {
                 cancelAnimationFrame(animationFrame);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 canvas.width = 0; canvas.height = 0;
-            }, 5000);
+            }, 6000);
         }
 
         function respuesta(opcion) {
@@ -297,7 +286,7 @@
                 throwConfetti();
                 document.getElementById('dedicatoria').style.display = 'block';
             } else {
-                alert("😢 Bueno... 💔");
+                alert("😢 ok... 💔");
             }
         }
 
@@ -307,20 +296,20 @@
             ring.style.animation = 'ring-pop 1s ease';
             setTimeout(() => {
                 ring.style.display = 'none';
-            }, 5000); // ahora 5 segundos
+            }, 6000);
         }
 
-        // Botón "No" que se mueve aleatoriamente dentro del área de los botones
-        function moverNo() {
+        // Botón "No" que se mueve solo cuando intentan hacer click
+        function moverNo(e) {
             playAudio();
+            e.preventDefault(); // Previene el click real
             const noBtn = document.getElementById('noButton');
-            const botones = document.getElementById('botones');
             const siBtn = document.getElementById('siButton');
-            // Área máxima donde puede moverse el botón (parent: .botones)
+            const botones = document.getElementById('botones');
             const parentRect = botones.getBoundingClientRect();
             const btnRect = noBtn.getBoundingClientRect();
+            const siRect = siBtn.getBoundingClientRect();
 
-            // Calcula límites para que no se salga del contenedor ni se superponga con el botón "Sí"
             const maxLeft = parentRect.width - btnRect.width;
             const maxTop = parentRect.height - btnRect.height;
 
@@ -331,7 +320,6 @@
                 top = Math.random() * maxTop;
                 tries++;
                 // Verifica que no se superponga con el botón "Sí"
-                const siRect = siBtn.getBoundingClientRect();
                 const noRectSimulado = {
                     left: parentRect.left + left,
                     right: parentRect.left + left + btnRect.width,
@@ -343,14 +331,14 @@
                       noRectSimulado.left > siRect.right ||
                       noRectSimulado.bottom < siRect.top ||
                       noRectSimulado.top > siRect.bottom);
-                if (!overlap || tries > 20) break;
+                if (!overlap || tries > 30) break;
             } while (true);
 
+            noBtn.style.position = "relative";
             noBtn.style.left = left + "px";
             noBtn.style.top = top + "px";
         }
 
-        // Ajusta el canvas de confeti si cambia el tamaño de la ventana
         window.addEventListener('resize', () => {
             const canvas = document.getElementById('confetti-canvas');
             if (canvas.width > 0) {
@@ -359,8 +347,8 @@
             }
         });
 
-        // Por si el usuario hace hover antes de presionar cualquier botón, asegura play en "No"
-        document.getElementById('noButton').addEventListener('mouseover', playAudio);
+        // Ya no es necesario mover el "No" en hover
+        // document.getElementById('noButton').addEventListener('mouseover', playAudio);
     </script>
 </body>
 </html>
