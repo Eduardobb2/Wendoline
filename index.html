@@ -66,9 +66,9 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-            gap: 12px;
-            margin: 18px 0 12px 0;
-            position: relative;
+            gap: 24px;
+            margin: 28px 0 12px 0;
+            position: static;
             z-index: 2;
         }
         button {
@@ -81,13 +81,16 @@
             cursor: pointer;
             transition: 0.3s;
             font-family: inherit;
+            position: static !important;
         }
         button:hover {
             background-color: #ad1457;
             transform: scale(1.08);
         }
         #noButton {
-            position: absolute;
+            position: static !important;
+            left: unset !important;
+            top: unset !important;
         }
         #confetti-canvas {
             pointer-events: none;
@@ -124,6 +127,7 @@
             line-height: 1.4;
             font-weight: 500;
             word-break: break-word;
+            display: none;
         }
         .dedicatoria .corazon {
             color: #e91e63;
@@ -159,17 +163,6 @@
             <svg width="28" height="28" viewBox="0 0 50 50">
                 <path d="M24.5,47 L10,32 C2,24 10,12 24.5,20 C39,12 47,24 39,32 Z" fill="#e91e63"/>
             </svg>
-            <!-- Tulipán SVG 2 -->
-            <svg width="32" height="50" viewBox="0 0 40 70">
-                <rect x="18" y="30" width="4" height="38" fill="#388e3c"/>
-                <ellipse cx="20" cy="30" rx="12" ry="17" fill="#ffb300"/>
-                <ellipse cx="12" cy="27" rx="4" ry="7" fill="#ffe082"/>
-                <ellipse cx="28" cy="27" rx="4" ry="7" fill="#ffe082"/>
-            </svg>
-            <!-- Corazón SVG pequeño -->
-            <svg width="20" height="20" viewBox="0 0 50 50">
-                <path d="M24.5,47 L10,32 C2,24 10,12 24.5,20 C39,12 47,24 39,32 Z" fill="#ad1457"/>
-            </svg>
         </div>
 
         <!-- Imagen del golden retriever -->
@@ -178,33 +171,22 @@
         <h1>💖 ¿Quieres ser mi novia? 💖</h1>
 
         <div class="decoraciones decoraciones-abajo">
-            <!-- Corazón SVG pequeño -->
-            <svg width="20" height="20" viewBox="0 0 50 50">
-                <path d="M24.5,47 L10,32 C2,24 10,12 24.5,20 C39,12 47,24 39,32 Z" fill="#ad1457"/>
-            </svg>
-            <!-- Tulipán SVG 2 -->
-            <svg width="32" height="50" viewBox="0 0 40 70">
-                <rect x="18" y="30" width="4" height="38" fill="#388e3c"/>
-                <ellipse cx="20" cy="30" rx="12" ry="17" fill="#ffb300"/>
-                <ellipse cx="12" cy="27" rx="4" ry="7" fill="#ffe082"/>
-                <ellipse cx="28" cy="27" rx="4" ry="7" fill="#ffe082"/>
-            </svg>
             <!-- Corazón SVG grande -->
             <svg width="28" height="28" viewBox="0 0 50 50">
                 <path d="M24.5,47 L10,32 C2,24 10,12 24.5,20 C39,12 47,24 39,32 Z" fill="#e91e63"/>
             </svg>
             <!-- Tulipán SVG -->
             <svg width="32" height="50" viewBox="0 0 40 70">
-                <rect x="18" y="30" width="4" height="38" fill="#449d44"/>
-                <ellipse cx="20" cy="30" rx="12" ry="17" fill="#ff69b4"/>
-                <ellipse cx="12" cy="27" rx="4" ry="7" fill="#ffb6c1"/>
-                <ellipse cx="28" cy="27" rx="4" ry="7" fill="#ffb6c1"/>
+                <rect x="18" y="30" width="4" height="38" fill="#388e3c"/>
+                <ellipse cx="20" cy="30" rx="12" ry="17" fill="#ffb300"/>
+                <ellipse cx="12" cy="27" rx="4" ry="7" fill="#ffe082"/>
+                <ellipse cx="28" cy="27" rx="4" ry="7" fill="#ffe082"/>
             </svg>
         </div>
     </div>
 
     <div class="botones">
-        <button onclick="respuesta('Sí')">Sí 🥰</button>
+        <button id="siButton" onclick="respuesta('Sí')">Sí 🥰</button>
         <button id="noButton" onmouseover="moverNo()" onclick="respuesta('No')">No 😢</button>
     </div>
 
@@ -225,8 +207,8 @@
         </svg>
     </div>
 
-    <div class="dedicatoria">
-        Ya estamos en una nueva etapa, espero y la siguiente sea poder ser marido y mujer, o papas de un perrito, o ya si nos sobra amor, tener unos chamaquitos, lo que sea que pase que siempre estemos juntos.<span class="corazon">❤️</span>
+    <div class="dedicatoria" id="dedicatoria">
+        Ya estamos en una nueva etapa, espero y la siguiente sea poder ser marido y mujer, o papas de un perrito, o ya si nos sobra amor, tener unos chamaquitos, lo que sea que pase que siempre estemos juntos y felices. Te amo mucho mi vida ❤️
     </div>
 
     <script>
@@ -307,6 +289,7 @@
                 alert("🥳 Muy bien chiquita bebe ❤️ Te amo mucho 💖");
                 mostrarAnillo();
                 throwConfetti();
+                document.getElementById('dedicatoria').style.display = 'block';
             } else {
                 alert("😢 Bueno... 💔");
             }
@@ -321,16 +304,17 @@
             }, 2500);
         }
 
-        // Mover botón No
+        // Cambiar el orden del botón No para que "huya", pero nunca se sobreponga
         function moverNo() {
             playAudio();
+            const botones = document.querySelector('.botones');
             const noBtn = document.getElementById('noButton');
-            const btnWidth = noBtn.offsetWidth;
-            const btnHeight = noBtn.offsetHeight;
-            const maxLeft = window.innerWidth - btnWidth - 10;
-            const maxTop = window.innerHeight - btnHeight - 10;
-            noBtn.style.left = Math.random() * maxLeft + 'px';
-            noBtn.style.top = Math.random() * maxTop + 'px';
+            // Cambia el orden de los botones
+            if (botones.firstElementChild === noBtn) {
+                botones.appendChild(noBtn);
+            } else {
+                botones.insertBefore(noBtn, botones.firstElementChild);
+            }
         }
 
         // Ajusta el canvas de confeti si cambia el tamaño de la ventana
