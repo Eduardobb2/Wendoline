@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>¿Quieres ser mi novia?</title>
+    <!-- Google Fonts: Montserrat y alternativas -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
     <style>
         html, body {
             height: 100%;
@@ -13,7 +15,7 @@
         body {
             min-height: 100vh;
             background: linear-gradient(to bottom right, #ffccd5, #ffe6f0);
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'Montserrat', 'Quicksand', 'Nunito', 'Comic Sans MS', cursive, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -68,8 +70,9 @@
             justify-content: center;
             gap: 24px;
             margin: 28px 0 12px 0;
-            position: static;
+            position: relative;
             z-index: 2;
+            min-height: 56px;
         }
         button {
             padding: 12px 22px;
@@ -81,16 +84,17 @@
             cursor: pointer;
             transition: 0.3s;
             font-family: inherit;
-            position: static !important;
+            position: relative;
         }
         button:hover {
             background-color: #ad1457;
             transform: scale(1.08);
         }
         #noButton {
-            position: static !important;
-            left: unset !important;
-            top: unset !important;
+            position: absolute !important;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
         #confetti-canvas {
             pointer-events: none;
@@ -185,7 +189,7 @@
         </div>
     </div>
 
-    <div class="botones">
+    <div class="botones" id="botones">
         <button id="siButton" onclick="respuesta('Sí')">Sí 🥰</button>
         <button id="noButton" onmouseover="moverNo()" onclick="respuesta('No')">No 😢</button>
     </div>
@@ -208,7 +212,7 @@
     </div>
 
     <div class="dedicatoria" id="dedicatoria">
-        Ya estamos en una nueva etapa, espero y la siguiente sea poder ser marido y mujer, o papas de un perrito, o ya si nos sobra amor, tener unos chamaquitos, lo que sea que pase que siempre estemos juntos y felices. Te amo mucho mi vida ❤️
+        Ya estamos en una nueva etapa, espero y la siguiente sea poder ser marido y mujer, o papas de un perrito, o ya si nos sobra amor, tener unos chamaquitos, lo que sea que pase que siempre estemo[...]
     </div>
 
     <script>
@@ -225,7 +229,7 @@
         window.addEventListener('touchstart', playAudio, { once: true });
         window.addEventListener('click', playAudio, { once: true });
 
-        // Confeti básico
+        // Confeti básico con duración de 5 segundos
         const confettiColors = ['#e91e63', '#f50057', '#ffeb3b', '#00bcd4', '#8bc34a', '#fff', '#f8bbd0'];
         function throwConfetti() {
             const canvas = document.getElementById('confetti-canvas');
@@ -247,6 +251,7 @@
                 });
             }
             let angle = 0;
+            let animationFrame;
             function draw() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 angle += 0.01;
@@ -273,14 +278,15 @@
                         c.y = -20;
                     }
                 }
-                requestAnimationFrame(draw);
+                animationFrame = requestAnimationFrame(draw);
             }
             draw();
-            // Detener confeti después de 3 segundos
+            // Detener confeti después de 5 segundos
             setTimeout(() => {
+                cancelAnimationFrame(animationFrame);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 canvas.width = 0; canvas.height = 0;
-            }, 3000);
+            }, 5000);
         }
 
         function respuesta(opcion) {
@@ -301,20 +307,47 @@
             ring.style.animation = 'ring-pop 1s ease';
             setTimeout(() => {
                 ring.style.display = 'none';
-            }, 2500);
+            }, 5000); // ahora 5 segundos
         }
 
-        // Cambiar el orden del botón No para que "huya", pero nunca se sobreponga
+        // Botón "No" que se mueve aleatoriamente dentro del área de los botones
         function moverNo() {
             playAudio();
-            const botones = document.querySelector('.botones');
             const noBtn = document.getElementById('noButton');
-            // Cambia el orden de los botones
-            if (botones.firstElementChild === noBtn) {
-                botones.appendChild(noBtn);
-            } else {
-                botones.insertBefore(noBtn, botones.firstElementChild);
-            }
+            const botones = document.getElementById('botones');
+            const siBtn = document.getElementById('siButton');
+            // Área máxima donde puede moverse el botón (parent: .botones)
+            const parentRect = botones.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // Calcula límites para que no se salga del contenedor ni se superponga con el botón "Sí"
+            const maxLeft = parentRect.width - btnRect.width;
+            const maxTop = parentRect.height - btnRect.height;
+
+            let left, top;
+            let tries = 0;
+            do {
+                left = Math.random() * maxLeft;
+                top = Math.random() * maxTop;
+                tries++;
+                // Verifica que no se superponga con el botón "Sí"
+                const siRect = siBtn.getBoundingClientRect();
+                const noRectSimulado = {
+                    left: parentRect.left + left,
+                    right: parentRect.left + left + btnRect.width,
+                    top: parentRect.top + top,
+                    bottom: parentRect.top + top + btnRect.height
+                };
+                const overlap =
+                    !(noRectSimulado.right < siRect.left ||
+                      noRectSimulado.left > siRect.right ||
+                      noRectSimulado.bottom < siRect.top ||
+                      noRectSimulado.top > siRect.bottom);
+                if (!overlap || tries > 20) break;
+            } while (true);
+
+            noBtn.style.left = left + "px";
+            noBtn.style.top = top + "px";
         }
 
         // Ajusta el canvas de confeti si cambia el tamaño de la ventana
