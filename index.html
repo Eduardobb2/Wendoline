@@ -78,8 +78,9 @@
     <button onclick="respuesta('Sí')">Sí 🥰</button>
     <button id="noButton" onmouseover="moverNo()" onclick="respuesta('No')">No 😢</button>
 
-    <audio autoplay loop>
-        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    <!-- Audio compatible y sin autoplay -->
+    <audio id="love-audio" preload="auto" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12c8c1e4a2.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
     </audio>
 
@@ -98,6 +99,17 @@
     </div>
 
     <script>
+        // Audio para Safari y otros navegadores (solo tras interacción)
+        const audio = document.getElementById('love-audio');
+        let hasPlayed = false;
+
+        function playAudio() {
+            if (!hasPlayed) {
+                audio.play().catch(()=>{}); // Safari requiere interacción
+                hasPlayed = true;
+            }
+        }
+
         // Confeti básico
         const confettiColors = ['#e91e63', '#f50057', '#ffeb3b', '#00bcd4', '#8bc34a', '#fff', '#f8bbd0'];
         function throwConfetti() {
@@ -157,6 +169,7 @@
         }
 
         function respuesta(opcion) {
+            playAudio();
             if (opcion === "Sí") {
                 alert("🥳 Muy bien chiquita bebe ❤️ Te amo mucho 💖");
                 mostrarAnillo();
@@ -175,11 +188,18 @@
             }, 2500);
         }
 
+        // Mejorada para Safari: no sale de pantalla
         function moverNo() {
+            playAudio();
             const noBtn = document.getElementById('noButton');
-            noBtn.style.top = Math.random() * (window.innerHeight - 60) + 'px';
-            noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+            const maxLeft = window.innerWidth - btnWidth - 10;
+            const maxTop = window.innerHeight - btnHeight - 10;
+            noBtn.style.left = Math.random() * maxLeft + 'px';
+            noBtn.style.top = Math.random() * maxTop + 'px';
         }
+
         // Ajusta el canvas de confeti si cambia el tamaño de la ventana
         window.addEventListener('resize', () => {
             const canvas = document.getElementById('confetti-canvas');
@@ -188,6 +208,9 @@
                 canvas.height = window.innerHeight;
             }
         });
+
+        // Por si el usuario hace hover antes de presionar cualquier botón, asegura play en "No"
+        document.getElementById('noButton').addEventListener('mouseover', playAudio);
     </script>
 </body>
 </html>
