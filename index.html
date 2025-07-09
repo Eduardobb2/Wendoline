@@ -24,6 +24,16 @@
             margin-bottom: 20px;
             object-fit: cover;
         }
+        .decoraciones {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .decoraciones svg {
+            vertical-align: middle;
+        }
         h1 {
             color: #e91e63;
             font-size: 2.5em;
@@ -72,15 +82,44 @@
     </style>
 </head>
 <body>
-    <!-- Foto de perrito, libre de derechos, ejemplo: unsplash -->
+    <!-- Foto de perrito original -->
     <img src="https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=facearea&w=400&h=400&facepad=3&q=80" alt="Perrito tierno" />
+    <!-- Foto de golden retriever cachorro -->
+    <img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=facearea&w=400&h=400&facepad=3&q=80" alt="Golden cachorro" />
+
+    <!-- Decoraciones de tulipanes y corazones -->
+    <div class="decoraciones">
+        <!-- Tulipán SVG -->
+        <svg width="40" height="70" viewBox="0 0 40 70">
+          <rect x="18" y="30" width="4" height="38" fill="#449d44"/>
+          <ellipse cx="20" cy="30" rx="12" ry="17" fill="#ff69b4"/>
+          <ellipse cx="12" cy="27" rx="4" ry="7" fill="#ffb6c1"/>
+          <ellipse cx="28" cy="27" rx="4" ry="7" fill="#ffb6c1"/>
+        </svg>
+        <!-- Corazón SVG grande -->
+        <svg width="36" height="36" viewBox="0 0 50 50">
+          <path d="M24.5,47 L10,32 C2,24 10,12 24.5,20 C39,12 47,24 39,32 Z" fill="#e91e63"/>
+        </svg>
+        <!-- Tulipán SVG 2 -->
+        <svg width="40" height="70" viewBox="0 0 40 70">
+          <rect x="18" y="30" width="4" height="38" fill="#388e3c"/>
+          <ellipse cx="20" cy="30" rx="12" ry="17" fill="#ffb300"/>
+          <ellipse cx="12" cy="27" rx="4" ry="7" fill="#ffe082"/>
+          <ellipse cx="28" cy="27" rx="4" ry="7" fill="#ffe082"/>
+        </svg>
+        <!-- Corazón SVG pequeño -->
+        <svg width="24" height="24" viewBox="0 0 50 50">
+          <path d="M24.5,47 L10,32 C2,24 10,12 24.5,20 C39,12 47,24 39,32 Z" fill="#ad1457"/>
+        </svg>
+    </div>
+
     <h1>💖 ¿Quieres ser mi novia? 💖</h1>
     <button onclick="respuesta('Sí')">Sí 🥰</button>
     <button id="noButton" onmouseover="moverNo()" onclick="respuesta('No')">No 😢</button>
 
-    <!-- Audio compatible y sin autoplay -->
+    <!-- Audio compatible y sin autoplay, piano bonito -->
     <audio id="love-audio" preload="auto" loop>
-        <source src="https://cdn.pixabay.com/audio/2022/10/16/audio_12c8c1e4a2.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/audio/2023/03/23/audio_12c4e3e8b1.mp3" type="audio/mpeg">
         Tu navegador no soporta audio.
     </audio>
 
